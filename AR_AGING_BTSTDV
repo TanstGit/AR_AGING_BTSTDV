@@ -1,0 +1,16 @@
+select
+C_C.Customer_Code as cust,
+count(A_ARI.Paid_Date) as payments,
+avg(dateDiff(dd, A_ARI.Invoice_Date, A_ARI.Paid_Date)) as avgDays,
+floor(stdev(dateDiff(dd, A_ARI.Invoice_Date, A_ARI.Paid_Date))) as stdDev
+ 
+from Accounting_v_AR_Invoice A_ARI
+ 
+left join Common_v_Customer C_C
+on                          C_C.Customer_No = A_ARI.Customer_No
+ 
+where  A_ARI.Paid_Date   is not null
+and   dateDiff(dd, A_ARI.Paid_Date, getDate() ) < 90
+ 
+group by C_C.Customer_Code
+order by C_C.Customer_Code
